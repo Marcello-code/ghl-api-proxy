@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GHL API Proxy Server
+
+En Next.js API proxy server til sikker integration med GoHighLevel API.
+
+## Features
+
+- **Sikker API proxy** - Beskytter API keys fra frontend eksponering
+- **CORS support** - Tillader cross-origin requests fra frontend apps
+- **Auto-discovery** - Understøtter locations og calendars discovery
+- **Metrics tracking** - Sporer beskeder, samtaler og møder
+- **TypeScript** - Fuldt typesikret implementation
+
+## API Endpoints
+
+### `/api/ghl/locations`
+- **Method:** GET
+- **Headers:** `x-api-key: [GHL_API_KEY]`
+- **Response:** Liste af tilgængelige locations
+
+### `/api/ghl/calendars`
+- **Method:** GET
+- **Headers:** `x-api-key: [GHL_API_KEY]`
+- **Query:** `locationId=[LOCATION_ID]`
+- **Response:** Liste af kalendere for valgt location
+
+### `/api/ghl/appointments`
+- **Method:** GET
+- **Headers:** `x-api-key: [GHL_API_KEY]`
+- **Query:** `from=YYYY-MM-DD&to=YYYY-MM-DD&calendarId=[CALENDAR_ID]`
+- **Response:** Antal møder og daglig breakdown
+
+### `/api/ghl/ai-metrics`
+- **Method:** GET
+- **Headers:** `x-api-key: [GHL_API_KEY]`
+- **Query:** `from=YYYY-MM-DD&to=YYYY-MM-DD&locationId=[LOCATION_ID]`
+- **Response:** Besked statistikker og KPI'er
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to test the API endpoints.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Denne proxy er designet til at blive deployed på Vercel:
 
-## Learn More
+```bash
+npm run build
+vercel --prod
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Miljøvariabler
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `GHL_API_VERSION` - GoHighLevel API version (default: "2021-07-28")
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Brug med Frontend
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Sæt proxy URL'en i din frontend app:
+```
+https://[PROXY_URL]/api/ghl
+```
