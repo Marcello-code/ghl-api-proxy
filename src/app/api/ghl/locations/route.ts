@@ -3,6 +3,15 @@ import { NextRequest, NextResponse } from 'next/server';
 const BASE = 'https://services.leadconnectorhq.com';
 const VER = process.env.GHL_API_VERSION || '2021-07-28';
 
+interface LocationItem {
+  id?: string;
+  locationId?: string;
+  uid?: string;
+  name?: string;
+  companyName?: string;
+  label?: string;
+}
+
 export async function GET(req: NextRequest) {
   const apiKey = req.headers.get('x-api-key');
   if (!apiKey) {
@@ -24,7 +33,7 @@ export async function GET(req: NextRequest) {
     }
 
     const data = await response.json();
-    const items = (data?.locations || data?.items || []).map((x: any) => ({
+    const items = (data?.locations || data?.items || []).map((x: LocationItem) => ({
       id: x.id || x.locationId || x.uid,
       name: x.name || x.companyName || x.label
     }));
@@ -36,7 +45,7 @@ export async function GET(req: NextRequest) {
         'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
       }
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

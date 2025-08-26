@@ -3,7 +3,22 @@ import { NextRequest, NextResponse } from 'next/server';
 const BASE = 'https://services.leadconnectorhq.com';
 const VER = process.env.GHL_API_VERSION || '2021-07-28';
 
-function isOutboundMessage(m: any): boolean {
+interface Message {
+  direction?: string;
+  messageBy?: string;
+  authorType?: string;
+  fromRole?: string;
+  dateAdded?: string;
+  createdAt?: string;
+  timestamp?: string;
+}
+
+interface Conversation {
+  id?: string;
+  contactId?: string;
+}
+
+function isOutboundMessage(m: Message): boolean {
   // Udgående fra virksomheden/system/agent/bot (ikke kontakt)
   return (
     m?.direction === 'outbound' ||
@@ -12,7 +27,7 @@ function isOutboundMessage(m: any): boolean {
   );
 }
 
-function isContactReply(m: any): boolean {
+function isContactReply(m: Message): boolean {
   // Indgående fra kontakt
   return (
     m?.direction === 'inbound' ||
@@ -43,7 +58,7 @@ export async function GET(req: NextRequest) {
     const endTime = `${to}T23:59:59Z`;
 
     // Get conversations with pagination
-    const conversations: any[] = [];
+    const conversations: Conversation[] = [];
     let nextPageToken: string | null = null;
 
     do {

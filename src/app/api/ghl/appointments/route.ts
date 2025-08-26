@@ -3,6 +3,11 @@ import { NextRequest, NextResponse } from 'next/server';
 const BASE = 'https://services.leadconnectorhq.com';
 const VER = process.env.GHL_API_VERSION || '2021-07-28';
 
+interface EventItem {
+  startTime?: string;
+  dateAdded?: string;
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const apiKey = req.headers.get('x-api-key');
@@ -49,7 +54,7 @@ export async function GET(req: NextRequest) {
 
     // Create daily breakdown
     const daily = new Map<string, number>();
-    events.forEach((event: any) => {
+    events.forEach((event: EventItem) => {
       const date = event.startTime?.slice(0, 10) || event.dateAdded?.slice(0, 10);
       if (date) {
         daily.set(date, (daily.get(date) || 0) + 1);
@@ -67,7 +72,7 @@ export async function GET(req: NextRequest) {
         'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
       }
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
